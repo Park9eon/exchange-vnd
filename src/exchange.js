@@ -12,7 +12,7 @@ export function krwToUsd(krw) {
  * @param {number} usd
  * @returns {number}
  */
-export function usdToKwr(usd) {
+export function usdToKrw(usd) {
     return usd * 1454.63
 }
 
@@ -32,4 +32,12 @@ export function usdToVnd(usd) {
  */
 export function krwToVnd(krw) {
     return krw * 17.23
+}
+
+export function vndToUsd(vnd) {
+    return vnd * 0.000040
+}
+
+export function vndToKrw(vnd) {
+    return vnd * 0.058
 }

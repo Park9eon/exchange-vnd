@@ -1,5 +1,5 @@
 import {useState} from 'react'
-import {krwToUsd, krwToVnd, usdToKwr, usdToVnd} from "./exchange"
+import {krwToUsd, krwToVnd, usdToKrw, usdToVnd, vndToKrw, vndToUsd} from "./exchange"
 import {Col, Divider, Form, InputNumber, Layout, Row, Statistic, Table} from "antd"
 
 const usdToVndDataSources = [10, 20, 50, 100, 200].map((it) => ({
@@ -15,23 +15,42 @@ const krwToVndDataSources = [10000, 20000, 50000].map((it) => ({
 
 function App() {
     const [form] = Form.useForm()
-    const [vnd, setVnd] = useState({usd: 0, krw: 0})
 
     const onChange = (values) => {
         if (typeof values.krw !== 'undefined') {
             const krw = values.krw
             const usd = krwToUsd(krw)
+            const vnd =  usdToVnd(usd)
 
-            form.setFieldValue('usd', usd)
-            setVnd({usd: usdToVnd(usd), krw: krwToVnd(krw)})
+            form.setFieldsValue({
+                usd,
+                krw,
+                vnd,
+            })
         }
 
         if (typeof values.usd !== 'undefined') {
             const usd = values.usd
-            const krw = usdToKwr(usd)
+            const krw = usdToKrw(usd)
+            const vnd =  usdToVnd(usd)
 
-            form.setFieldValue('krw', krw)
-            setVnd({usd: usdToVnd(usd), krw: krwToVnd(krw)})
+            form.setFieldsValue({
+                usd,
+                krw,
+                vnd,
+            })
+        }
+
+        if (typeof values.vnd !== 'undefined') {
+            const vnd =  values.vnd
+            const usd = vndToUsd(vnd)
+            const krw = vndToKrw(vnd)
+
+            form.setFieldsValue({
+                usd,
+                krw,
+                vnd,
+            })
         }
     }
 
@@ -53,13 +72,12 @@ function App() {
                                          parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}/>
                         </Form.Item>
                     </Col>
-                </Row>
-                <Row gutter={[16, 16]}>
                     <Col>
-                        <Statistic title="KRW => VND" value={vnd.krw}/>
-                    </Col>
-                    <Col>
-                        <Statistic title="USD => VND" value={vnd.usd}/>
+                        <Form.Item name={'vnd'} label={'VND'}>
+                            <InputNumber controls={false}
+                                         formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                         parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}/>
+                        </Form.Item>
                     </Col>
                 </Row>
             </Form>
